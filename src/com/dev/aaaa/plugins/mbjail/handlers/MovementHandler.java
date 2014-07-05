@@ -5,30 +5,34 @@ import com.mbserver.api.events.EventHandler;
 import com.mbserver.api.events.Listener;
 import com.mbserver.api.events.PlayerMoveEvent;
 import com.mbserver.api.events.PlayerTeleportEvent;
+//Remove in 1.13
+import com.mbserver.api.events.RunMode;
 import com.mbserver.api.game.Location;
+import com.mbserver.api.game.Player;
 
 public class MovementHandler implements Listener{
 
-	private Config config;
+	private final Config config;
 	
-	public MovementHandler(Config config) {
+	public MovementHandler(final Config config) {
 		this.config = config;
 	}
 	
-	
-	@EventHandler
-	public void onMove(PlayerMoveEvent e){
+	//Remove concurrency in 1.13
+	@EventHandler(concurrency = RunMode.THREADED)
+	public void onMove(final PlayerMoveEvent e){
 		
 		if(e instanceof PlayerTeleportEvent)
 			return;
-		
-		if(config.isInJail(e.getPlayer().getLoginName()))
+		final Player player = e.getPlayer();
+		if(config.isInJail(player.getLoginName()))
 		{
-			if(!config.contains(e.getPlayer().getLocation())){
-				e.setCancelled(true);
-				Location jail = config.getJailLocation();
-				e.getPlayer().teleport(jail.add(5, 2, 5));
-				e.getPlayer().sendMessage("[MBJail] You are in jail!");
+			if(!config.contains(player.getLocation())){
+				//Enable cancelability in 1.13
+				//e.setCancelled(true);
+				final Location jail = config.getJailLocation();
+				player.teleport(jail.add(5, 2, 5));
+				player.sendMessage("[MBJail] You are in jail!");
 			}
 		}
 	}
