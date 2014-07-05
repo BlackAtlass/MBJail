@@ -24,7 +24,10 @@ public class Jail implements CommandExecutor{
 				sender.sendMessage("[MBJail] If player is online use display name");
 				return;
 			}
-			
+			if(config.getJailLocation() == null){
+				sender.sendMessage("[MBJail] No jail has been set!");
+				return;
+			}
 			Player target = server.getPlayer(args[0]);
 			
 			if(target != null){

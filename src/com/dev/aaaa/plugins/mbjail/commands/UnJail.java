@@ -25,14 +25,21 @@ public class UnJail implements CommandExecutor{
 				return;
 			}
 			
+			if(config.getJailLocation() == null){
+				sender.sendMessage("[MBJail] No jail has been set!");
+				return;
+			}
+			
 			Player target = server.getPlayer(args[0]);
 			
 			if(target != null){
 				if(!config.deleteMember(target.getLoginName().toLowerCase()))
 					sender.sendMessage("[MBJail] The player '" + args[0] + "' is not in jail!");
 				
-				else
+				else{
+					target.teleport(config.getJailLocation().add(-1, 0, -1));
 					sender.sendMessage("[MBJail] The player '" + args[0] + "' has been unjailed!");
+				}
 				
 				return;
 			}
